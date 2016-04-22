@@ -30,7 +30,7 @@ public class LabelStatusMessage extends JLabel {
 	}
 	
 	private LabelStatusMessage() {
-		this.message = START_MESSAGE;
+		setMessage(START_MESSAGE);
 		this.status = true;
 	}
 	

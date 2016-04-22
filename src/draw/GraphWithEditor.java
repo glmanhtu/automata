@@ -29,12 +29,43 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 	 */
 	private static final long serialVersionUID = 1L;
 	private Vector<Shape> shapes;
+	
+	/**
+	 * Shape factory to procedure shape
+	 */
 	private ShapeFactory shapeFactory;
+	
+	/**
+	 * Determine which shape is currently
+	 */
 	private Shape currentShape;
+	
+	/**
+	 * Determine which shape will be draw
+	 * This value must be one of ShapeFactory type number
+	 */
 	private int shapeType;
+	
+	/**
+	 * Determine if user hold ALT key or not
+	 * True: holding ALT key
+	 */
 	private boolean holdAltKey = false;
+	
+	/**
+	 * Determine which color is currently using 
+	 */
 	private Color currentColor;
+	
+	/**
+	 * Object to verify automata
+	 */
 	private Automata automata;
+	
+	/**
+	 * Determine which point is currently mouse in
+	 * Change when mouse drag. see function mouseDragged
+	 */
 	private Point2D currentPoint;
 	public GraphWithEditor() {
 		this.shapes = new Vector<>();
@@ -226,6 +257,9 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
+		/**
+		 * When mouse release & we are drawing edge
+		 */
 		if (this.currentShape instanceof Edge) {
 			Point2D point = new Point2D.Double(e.getX(), e.getY());
 			for (Shape shape: shapes) {
@@ -324,7 +358,12 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		if (e.isAltDown()) {
 			holdAltKey = true;
 		}
-		if (e.getKeyCode() == 32) {
+		
+		/**
+		 * If key pressed is space and we are drawing edge
+		 * So, create join point here
+		 */
+		if (e.getKeyCode() == 32 && currentShape instanceof Edge) {
 			JoinPoint shape = (JoinPoint) shapeFactory.getShape(ShapeFactory.JOIN_POINT);
 			shape.setPosition(currentPoint);
 			shape.setSource(currentShape);

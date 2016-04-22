@@ -3,6 +3,7 @@ package shape;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
 public class Edge extends JoinPointBase {
@@ -26,7 +27,40 @@ public class Edge extends JoinPointBase {
 		if (getDest() != null) {
 			destPoint = getDest().getPosition();
 		}
-		if (sourcePoint != null && destPoint != null) {
+		
+		if (getSource().equals(getDest()) || getSource().verifyShapeExists(point)) {
+			double distance = Math.sqrt(Math.pow((point.getX() - sourcePoint.getX()), 2) + Math.pow((point.getY() - sourcePoint.getY()), 2));
+			double theta = findTheta(new Line2D.Float(sourcePoint, point));
+			double phi = Math.toRadians(45);
+            double rho = theta + phi;
+        	Double x = sourcePoint.getX() - distance*4* Math.cos(rho);
+	        Double y = sourcePoint.getY() - distance*4* Math.sin(rho);
+            ga.draw(new Line2D.Float(sourcePoint, new Point2D.Double(x,y)));
+            rho = theta - phi;
+            
+            Double x2 = sourcePoint.getX() - distance*4* Math.cos(rho);
+	        Double y2 = sourcePoint.getY() - distance*4* Math.sin(rho);
+            ga.draw(new Line2D.Float(sourcePoint, new Point2D.Double(x2,y2)));
+            
+            Double quar_x2 = ((x+x2)/2 +x2)/2;
+            Double quar_y2 = ((y+y2)/2 + y2)/ 2;
+           
+            phi = Math.toRadians(0);
+            quar_x2 = quar_x2 - distance* Math.cos(theta + phi);
+	        quar_y2 = quar_y2 - distance* Math.sin(theta + phi);
+            
+            Double quar_x = ((x + x2)/2 + x)/2;
+            Double quar_y = ((y + y2)/2 + y)/2;
+            
+            quar_x = quar_x - distance* Math.cos(theta + phi);
+	        quar_y = quar_y - distance* Math.sin(theta + phi);
+            
+            ga.draw( new Line2D.Float( new Point2D.Double(x,y), new Point2D.Double(quar_x,quar_y)));
+            ga.draw( new Line2D.Float( new Point2D.Double(x2, y2), new Point2D.Double(quar_x2,quar_y2)));
+            line = new Line2D.Float( new Point2D.Double(quar_x, quar_y), new Point2D.Double(quar_x2,quar_y2));
+            ga.draw(line);
+			
+		} else if (sourcePoint != null && destPoint != null) {
 			line = new Line2D.Float(sourcePoint, destPoint);
 			drawArrow(ga, line);
 		} else if (sourcePoint != null && point != null) {
@@ -49,11 +83,7 @@ public class Edge extends JoinPointBase {
 		
 		double quarX = (midX + line.getP1().getX())/2;
 		double quarY = (midY + line.getP1().getY())/2;
-		
-		double d2x = quarX - line.getP1().getX();
-		double d2y = quarY - line.getP1().getY(); 
-		
-		double theta2 = Math.atan2(d2y, d2x);
+		double theta2 = findTheta(line);
 		double x, y, rho = theta2 + phi;
         for(int j = 0; j < 2; j++)
         {
@@ -64,6 +94,17 @@ public class Edge extends JoinPointBase {
         }
         
 		ga.draw(line);
+	}
+	
+	public static double findTheta(Line2D line) {
+		double midX = (line.getP2().getX() + line.getP1().getX())/2;
+		double midY = (line.getP2().getY() + line.getP1().getY())/2;
+		
+		double d2x = midX - line.getP1().getX();
+		double d2y = midY - line.getP1().getY(); 
+		
+		return Math.atan2(d2y, d2x);
+		
 	}
 	
 	public Line2D getLine()
