@@ -16,11 +16,11 @@ public class FileUtils<T> extends Component {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public boolean generateExport(T object) throws IOException {
+	public boolean generateExport(T objectToExport) throws IOException {
 		String filePath = saveFileDialog();
 		FileOutputStream fout = new FileOutputStream(filePath);
 		ObjectOutputStream oos = new ObjectOutputStream(fout);   
-		oos.writeObject(object);
+		oos.writeObject(objectToExport);
 		oos.close();
 		return true;
 	}

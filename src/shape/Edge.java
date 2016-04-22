@@ -7,6 +7,10 @@ import java.awt.geom.Point2D;
 
 public class Edge extends JoinPointBase {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Point2D point;
 	private Line2D line;
 	private EdgeLabel render;

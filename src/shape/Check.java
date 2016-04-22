@@ -10,6 +10,10 @@ import java.awt.geom.Point2D;
 
 public class Check extends BaseShape {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Point2D point;
 	
 	@Override

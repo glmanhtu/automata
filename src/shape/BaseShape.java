@@ -1,8 +1,14 @@
 package shape;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-abstract class BaseShape implements Shape {
+abstract class BaseShape implements Shape, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected Color getContrastColor(Color color) {
 		int d = 0;
 

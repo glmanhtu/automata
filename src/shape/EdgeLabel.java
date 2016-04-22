@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -13,7 +14,7 @@ import javax.swing.event.MouseInputListener;
 
 import draw.GraphWithEditor;
 
-public class EdgeLabel extends JLabel implements Shape, MouseInputListener {
+public class EdgeLabel extends JLabel implements Shape, MouseInputListener, Serializable {
 
 	/**
 	 * 

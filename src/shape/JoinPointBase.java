@@ -1,6 +1,13 @@
 package shape;
-abstract class JoinPointBase implements Shape {
 
+import java.io.Serializable;
+
+abstract class JoinPointBase implements Shape, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Shape source;
 	private Shape dest;
 	protected Square delegate;

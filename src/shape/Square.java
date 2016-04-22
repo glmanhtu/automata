@@ -7,6 +7,11 @@ import java.awt.geom.Rectangle2D;
 
 public class Square extends BaseShape {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private Point2D point;
 	
 	private Rectangle2D.Double rectange;

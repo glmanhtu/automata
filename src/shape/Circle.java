@@ -6,6 +6,10 @@ import java.awt.geom.Point2D;
 
 public class Circle extends BaseShape {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Point2D point;
 	private int radius = 25;
 	private String label = "";

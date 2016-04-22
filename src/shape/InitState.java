@@ -6,6 +6,11 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 public class InitState extends Circle {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public void draw(Graphics2D ga) {
 		

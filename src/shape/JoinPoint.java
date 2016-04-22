@@ -4,6 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 
 public class JoinPoint extends JoinPointBase {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public JoinPoint()
 	{
 		delegate = new Square();

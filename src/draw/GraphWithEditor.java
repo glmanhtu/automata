@@ -437,6 +437,13 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 	public void setShapes(Vector<Shape> shapes) {
 		// TODO Auto-generated method stub
 		this.shapes = shapes;
+		for (Shape shape : shapes) {
+			if (shape instanceof EdgeLabel) {
+				add((EdgeLabel)shape);
+			}
+		}
+		this.revalidate();
+		this.repaint();
 	}
 	@Override
 	public Vector<Shape> getShapes() {
