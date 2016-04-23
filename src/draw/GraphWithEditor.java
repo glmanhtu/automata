@@ -89,6 +89,7 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		Graphics2D ga = (Graphics2D)g;
 		ga.setColor(currentColor);
 		for (Shape shape : shapes) {
+			// For increase render look like
 			ga.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			shape.draw(ga);
 		}
@@ -162,7 +163,6 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 	private void removeJoinShape(Shape shapeToRemove) {
 		
 		if (shapeToRemove instanceof JoinPoint) {
-			
 			
 			// Source Edge mean edge which go to this Shape
 			Edge source = (Edge) ((JoinPoint) shapeToRemove).getSource();

@@ -21,7 +21,7 @@ public class EdgeLabel extends JLabel implements Shape, MouseInputListener, Seri
 	 */
 	private static final long serialVersionUID = 1L;
 	private Edge edge;
-	private double phi = Math.toRadians(40);
+	private double phi = Math.toRadians(10);
 	private int barb = 12;
 	private double x, y;
 	private String label = "e";
