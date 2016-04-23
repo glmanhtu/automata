@@ -39,6 +39,7 @@ public class Circle extends BaseShape {
 	
 	@Override
 	public boolean verifyShapeExists(Point2D point) {
+		if (point == null) return false;
 		if (this.point.getX() + radius > point.getX() && this.point.getX() - radius < point.getX()) {
 			if (this.point.getY() + radius > point.getY() && this.point.getY() - radius < point.getY()) {
 				return true;

@@ -2,7 +2,7 @@ package shape;
 
 import java.io.Serializable;
 
-abstract class JoinPointBase implements Shape, Serializable {
+abstract class JoinPointBase extends BaseShape implements Shape, Serializable {
 
 	/**
 	 * 

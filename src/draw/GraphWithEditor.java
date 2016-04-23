@@ -125,7 +125,7 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 				 * Otherwise, this action is move shape
 				 */
 				else {
-					setCurrentShape(shape);
+					createEdgeForShape(shape);
 				}
 				return;
 			}
@@ -136,10 +136,12 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		Shape shape = shapeFactory.getShape(shapeType);
 		shape.setPosition(point);
 		addShape(shape);
-		setCurrentShape(shape);
+		createEdgeForShape(shape);
 		this.validate();
 		this.repaint();
-		setAutomataChanges();
+		if (!holdAltKey) {
+			setAutomataChanges();
+		}		
 	}
 	/**
 	 * Remove only JointPoint
@@ -244,13 +246,14 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		}
 	}
 	
-	private void setCurrentShape(Shape shape) {
+	private void createEdgeForShape(Shape shape) {
 		this.currentShape = shape;
 		if (holdAltKey && !(shape instanceof JoinPoint)) {
 			Shape edge = createEdge();
 			((Edge)edge).setSource(currentShape);
 			addShape(edge);
-			this.currentShape = edge;
+			currentShape.setDrawing(false);
+			currentShape = edge;
 		}
 	}
 	
@@ -274,6 +277,7 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 					 * Otherwise, set current edge point to this shape
 					 */
 					((Edge) currentShape).setDest(shape);
+					currentShape.setDrawing(false);
 					currentShape = null;
 					validate();
 					repaint();
@@ -293,9 +297,12 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 			((Edge) currentShape).setDest(shape);
 			setAutomataChanges();
 		}
-		this.currentShape = null;
-		this.validate();
-		this.repaint();
+		if (currentShape != null) {
+			currentShape.setDrawing(false);
+			currentShape = null;
+		}
+		validate();
+		repaint();
 	}
 
 
@@ -308,12 +315,12 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		 * In case we hold Alt key & create connection edge  
 		 */
 		if (holdAltKey && !(currentShape instanceof Edge)) {
-			setCurrentShape(currentShape);
+			createEdgeForShape(currentShape);
 		}
 		/**
 		 * Other wise
 		 */
-		if (this.currentShape != null) {
+		else if (this.currentShape != null) {
 			/**
 			 * If current shape is Edge
 			 * We just move this shape to new ppoint
@@ -323,6 +330,8 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 			} else {
 				currentShape.setPosition(point);
 			}
+		} else {
+			return;
 		}
 		this.validate();
 		this.repaint();
@@ -373,6 +382,7 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 			shape.setDest(edge);
 			addShape(shape);
 			addShape(edge);
+			currentShape.setDrawing(false);
 			currentShape = edge;
 			revalidate();
 			repaint();

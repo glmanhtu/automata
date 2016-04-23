@@ -16,6 +16,7 @@ public class Edge extends JoinPointBase {
 	private Line2D line;
 	private EdgeLabel render;
 	private Color color = Color.black;
+	private double distance, theta;
 	
 	@Override
 	public void draw(Graphics2D ga) {
@@ -29,17 +30,22 @@ public class Edge extends JoinPointBase {
 		}
 		
 		if (getSource().equals(getDest()) || getSource().verifyShapeExists(point)) {
-			double distance = Math.sqrt(Math.pow((point.getX() - sourcePoint.getX()), 2) + Math.pow((point.getY() - sourcePoint.getY()), 2));
-			double theta = findTheta(new Line2D.Float(sourcePoint, point));
-			double phi = Math.toRadians(45);
+			if (isDrawing()) {
+				distance = Math.sqrt(Math.pow((point.getX() - sourcePoint.getX()), 2) + Math.pow((point.getY() - sourcePoint.getY()), 2));
+				theta = findTheta(new Line2D.Float(sourcePoint, point));
+			}
+			double phi = Math.toRadians(40);
             double rho = theta + phi;
         	Double x = sourcePoint.getX() - distance*4* Math.cos(rho);
 	        Double y = sourcePoint.getY() - distance*4* Math.sin(rho);
-            ga.draw(new Line2D.Float(sourcePoint, new Point2D.Double(x,y)));
+	        line = new Line2D.Float(sourcePoint, new Point2D.Double(x,y));
+	        drawArrow(ga, line);
             rho = theta - phi;
             
             Double x2 = sourcePoint.getX() - distance*4* Math.cos(rho);
 	        Double y2 = sourcePoint.getY() - distance*4* Math.sin(rho);
+	        line = new Line2D.Float(new Point2D.Double(x2,y2), sourcePoint);
+	        drawArrow(ga, line);
             ga.draw(new Line2D.Float(sourcePoint, new Point2D.Double(x2,y2)));
             
             Double quar_x2 = ((x+x2)/2 +x2)/2;
@@ -58,7 +64,7 @@ public class Edge extends JoinPointBase {
             ga.draw( new Line2D.Float( new Point2D.Double(x,y), new Point2D.Double(quar_x,quar_y)));
             ga.draw( new Line2D.Float( new Point2D.Double(x2, y2), new Point2D.Double(quar_x2,quar_y2)));
             line = new Line2D.Float( new Point2D.Double(quar_x, quar_y), new Point2D.Double(quar_x2,quar_y2));
-            ga.draw(line);
+            drawArrow(ga, line);
 			
 		} else if (sourcePoint != null && destPoint != null) {
 			line = new Line2D.Float(sourcePoint, destPoint);

@@ -178,4 +178,16 @@ public class EdgeLabel extends JLabel implements Shape, MouseInputListener, Seri
 		// TODO Auto-generated method stub
 		return label;
 	}
+
+	@Override
+	public boolean isDrawing() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setDrawing(boolean draw) {
+		// TODO Auto-generated method stub
+		
+	}
 }

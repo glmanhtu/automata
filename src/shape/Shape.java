@@ -13,4 +13,6 @@ public interface Shape {
 	String getLabel();
 	void setAsIcon();
 	String toString();
+	boolean isDrawing();
+	void setDrawing(boolean draw);
 }
