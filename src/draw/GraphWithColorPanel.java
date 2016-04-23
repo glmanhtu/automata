@@ -67,8 +67,9 @@ public class GraphWithColorPanel extends GraphDecorator {
 		}
 		addSpace(35 - colors.size());
 		JTextField test = new JTextField() {
+			
 			/**
-			 * 
+			 * Add PlaceHolder to JTextField
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -144,8 +145,9 @@ public class GraphWithColorPanel extends GraphDecorator {
 	}
 	
 	private class ButtonWithCheck extends JButton {
+		
 		/**
-		 * 
+		 * Add ability to check 
 		 */
 		private static final long serialVersionUID = 1L;
 		private Color color;

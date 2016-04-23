@@ -25,7 +25,10 @@ import shape.ShapeFactory;
 public class GraphWithEditor extends JComponent implements MouseInputListener, Graph, KeyListener {
 
 	/**
-	 * 
+	 * This is the heart of application
+	 * This contain all Shapes and Paint area
+	 * This design how Shapes connect to another
+	 * And take care how user interactive with Shapes
 	 */
 	private static final long serialVersionUID = 1L;
 	private Vector<Shape> shapes;
@@ -130,8 +133,9 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 				return;
 			}
 		}
+		
 		/**
-		 * If it doesn't have any shape here, create new shape
+		 * If it doesn't have any shape here, create a new shape
 		 */
 		Shape shape = shapeFactory.getShape(shapeType);
 		shape.setPosition(point);
@@ -139,6 +143,13 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		createEdgeForShape(shape);
 		this.validate();
 		this.repaint();
+		
+		/**
+		 * This prevent bug when user hold ALT and drag in empty space
+		 * In this case, a new Edge is created
+		 * But this Edge has no Destination Shape
+		 * Therefore, we need to set which is destination shape for this Edge first
+		 */
 		if (!holdAltKey) {
 			setAutomataChanges();
 		}		
@@ -152,18 +163,16 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		
 		if (shapeToRemove instanceof JoinPoint) {
 			
-			/**
-			 * source Edge mean edge go to this Shape
-			 */
+			
+			// Source Edge mean edge which go to this Shape
 			Edge source = (Edge) ((JoinPoint) shapeToRemove).getSource();
 			
-			/**
-			 * dest Edge mean edge go out this Shape
-			 */
+			// Destination Edge mean edge which go out this Shape
 			Edge dest = (Edge) ((JoinPoint) shapeToRemove).getDest();
 			
-			
 			shapes.remove(shapeToRemove);
+			
+			// Create Edge to join between two shapes
 			Edge edge = (Edge) createEdge();
 			edge.setSource(source.getSource());
 			if (source.getSource() instanceof JoinPoint) {
@@ -187,14 +196,29 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		}
 	}
 	
+	/**
+	 * Remove Shape which type is not JoinPoint
+	 * @param shapeToRemove
+	 */
 	private void removeShape(Shape shapeToRemove) {
+		// Find all Edges which come to this Shape
 		Vector<Edge> sources = getEdgeSource(shapeToRemove, shapes);
+		
+		// Find all Edges which come from this Shape
 		Vector<Edge> dests = getEdgeDest(shapeToRemove, shapes);
 		shapes.remove(shapeToRemove);
-		this.recursiveRmSource(sources);
-		this.recursiveRmDest(dests);
+		
+		// Remove all Edge and JointPoint
+		removeEdgeJointPointSource(sources);
+		removeEdgeJointPointDest(dests);
 	}
 	
+	/**
+	 * Get all Edges from list Shapes which come to a given Shape
+	 * @param shapeToFind
+	 * @param shapes
+	 * @return
+	 */
 	public static Vector<Edge> getEdgeSource(Shape shapeToFind, Vector<Shape> shapes) {
 		Vector<Edge> sources = new Vector<>();
 		for (Shape shape : shapes) {
@@ -206,7 +230,13 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		}
 		return sources;
 	}
-
+	
+	/**
+	 * Get all Edges from list Shapes which come from a given Shape
+	 * @param shapeToFind
+	 * @param shapes
+	 * @return
+	 */
 	public static Vector<Edge> getEdgeDest(Shape shapeToFind, Vector<Shape> shapes) {
 		Vector<Edge> sources = new Vector<>();
 		for (Shape shape : shapes) {
@@ -219,9 +249,14 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		return sources;
 	}
 	
-	private void recursiveRmDest(Vector<Edge> edges) {
+	/**
+	 * From a given list of Edges
+	 * Remove all Edges, JointPoints until find another type of Shape
+	 * Go from Source to Destination
+	 * @param edges
+	 */
+	private void removeEdgeJointPointDest(Vector<Edge> edges) {
 		for (Edge e: edges) {
-			
 				Edge currentEdge = e;
 				removeEdge(e);
 				while (shapes.contains(currentEdge.getDest()) && currentEdge.getDest() instanceof JoinPoint) {
@@ -232,11 +267,17 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 				}
 		}
 	}
-	private void recursiveRmSource(Vector<Edge> edges) {
+	
+	/**
+	 * From a given list of Edges
+	 * Remove all Edges, JointPoints until find another type of Shape
+	 * Go from Destination to Source
+	 * @param edges
+	 */
+	private void removeEdgeJointPointSource(Vector<Edge> edges) {
 		for (Edge e: edges) {
 			Edge currentEdge = e;
 			removeEdge(e);
-			
 			while (shapes.contains(currentEdge.getSource()) && currentEdge.getSource() instanceof JoinPoint) {
 				JoinPoint join = (JoinPoint) currentEdge.getSource();
 				shapes.remove(join);
@@ -246,8 +287,13 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		}
 	}
 	
+	/**
+	 * From a given Shape
+	 * Create Edge which have source is this Shape
+	 * @param shape
+	 */
 	private void createEdgeForShape(Shape shape) {
-		this.currentShape = shape;
+		currentShape = shape;
 		if (holdAltKey && !(shape instanceof JoinPoint)) {
 			Shape edge = createEdge();
 			((Edge)edge).setSource(currentShape);
@@ -394,6 +440,11 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		holdAltKey = false;
 	}
 	
+	/**
+	 * Create Edge
+	 * And also create EdgeLabel for this Edge
+	 * @return
+	 */
 	private Shape createEdge() {
 		Edge edge = (Edge)shapeFactory.getShape(ShapeFactory.EDGE);
 		EdgeLabel edgeLabel = (EdgeLabel) shapeFactory.getShape(ShapeFactory.EDGE_LABEL);
@@ -403,6 +454,12 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		add(edgeLabel);
 		return edge;
 	}
+	
+	/**
+	 * Remove Edge
+	 * And also remove Edge Label belong to this Edge
+	 * @param edge
+	 */
 	private void removeEdge(Edge edge) {
 		shapes.remove(edge);
 		shapes.remove(edge.getEdgeLabel());
@@ -419,6 +476,12 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		this.automata = automata;
 	}
 	
+	/**
+	 * From a given Edge
+	 * Find a Shape which Edge come from - Ignore JoinPoint
+	 * @param edge
+	 * @return
+	 */
 	public static Shape findSourceShape(Edge edge) {
 		Shape shape = null;
 		Edge currentEdge = edge;
@@ -432,6 +495,34 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		return shape;
 	}
 	
+	/**
+	 * From a given Edge
+	 * Find a Shape which Edge come to - Ignore JoinPoint
+	 * @param edge
+	 * @return
+	 */
+	public static Shape findDestShape(Edge edge) {
+		Shape shape = null;
+		Edge currentEdge = edge;
+		while (shape == null) {
+			if (currentEdge.getDest() instanceof JoinPoint) {
+				currentEdge = (Edge) ((JoinPoint)currentEdge.getDest()).getDest();
+			} else {
+				shape = currentEdge.getDest();
+			}
+		}
+		return shape;
+	}
+	
+	/**
+	 * From Shape start & Shape end
+	 * Find the right way (Edge path, include JoinPoint) which have EdgeLabel as same as given Label
+	 * And then, highlight it using color green
+	 * @param start
+	 * @param end
+	 * @param shapes
+	 * @param label
+	 */
 	public static void showPath(Shape start, Shape end, Vector<Shape> shapes, String label) {
 		Vector<Edge> paths = getEdgeDest(start, shapes);
 		for (Edge edge : paths) {
@@ -441,6 +532,13 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		}
 	}
 	
+	/**
+	 * Using recursive to detect if from given edge, can we go to Shape end
+	 * If yes, highlight it using Color green
+	 * @param edge
+	 * @param end
+	 * @return
+	 */
 	public static boolean recursiveFindPath(Edge edge, Shape end) {
 		if (edge.getDest() instanceof JoinPoint) {
 			if (recursiveFindPath((Edge) ((JoinPoint)edge.getDest()).getDest(), end)) {
@@ -454,18 +552,6 @@ public class GraphWithEditor extends JComponent implements MouseInputListener, G
 		return false;
 	}
 	
-	public static Shape findDestShape(Edge edge) {
-		Shape shape = null;
-		Edge currentEdge = edge;
-		while (shape == null) {
-			if (currentEdge.getDest() instanceof JoinPoint) {
-				currentEdge = (Edge) ((JoinPoint)currentEdge.getDest()).getDest();
-			} else {
-				shape = currentEdge.getDest();
-			}
-		}
-		return shape;
-	}
 	@Override
 	public void setAutomataChanges() {
 		// TODO Auto-generated method stub

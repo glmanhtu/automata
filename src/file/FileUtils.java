@@ -12,7 +12,7 @@ import java.io.ObjectInputStream;
 
 public class FileUtils<T> extends Component {
 	/**
-	 * 
+	 * This class will decide how to export & import file
 	 */
 	private static final long serialVersionUID = 1L;
 
